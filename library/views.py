@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.db.models import Q
 
 from library.forms import LoginForm, UserSignupForm
 from library.models import Book, BorrowRequest, User
@@ -47,8 +48,20 @@ def login_view(request):
 
 @login_required(login_url='/login/')
 def catalog(request):
-    books = Book.objects.all()
-    return render(request, 'catalog.html', {'books': books})
+    search_query = request.GET.get('search', '')
+    
+    if search_query:
+        books = Book.objects.filter(
+            Q(title__icontains=search_query) |
+            Q(author__icontains=search_query)
+        )
+    else:
+        books = Book.objects.all()
+        
+    context = {
+        'books': books,
+    }
+    return render(request, 'catalog.html', context)
 
 @login_required(login_url='/login/')
 def borrow_book(request, book_id):

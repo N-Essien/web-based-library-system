@@ -4,6 +4,21 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center">Book Catalog</h2>
+
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
+            <form method="GET" action="{% url 'catalog' %}" class="d-flex">
+                <input 
+                    type="text" 
+                    name="search" 
+                    class="form-control me-2" 
+                    placeholder="Search by title or author..."
+                    value="{{ request.GET.search }}"
+                >
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
     
     <div class="row mt-4">
         {% for book in books %}
